@@ -1,0 +1,1 @@
+"0","data$Nombre.jour<-mapvalues(data$Nombre.jour,from=c(""1à 2""),to=c(""1 à 2""))"

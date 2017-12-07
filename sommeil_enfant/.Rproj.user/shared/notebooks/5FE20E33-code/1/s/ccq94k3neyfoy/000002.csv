@@ -1,0 +1,8 @@
+"0","data$trouble.sommeil_c123<-as.factor(data$trouble.sommeil_c123)"
+"0","data$trouble.sommeil.c23<-as.factor(data$trouble.sommeil.c23)"
+"0","data$trouble.sommeil.c13<-as.factor(data$trouble.sommeil.c13)"
+"0","data$trouble.sommeil.c12<-as.factor(data$trouble.sommeil.c12)"
+"0","data$trouble.sommeil.c3<-as.factor(data$trouble.sommeil.c3)"
+"0","data$trouble.sommeil.c2<-as.factor(data$trouble.sommeil.c2)"
+"0","data$trouble.sommeil.c1<-as.factor(data$trouble.sommeil.c1)"
+"0","data$trouble.sommeil<-as.factor(data$trouble.sommeil)"

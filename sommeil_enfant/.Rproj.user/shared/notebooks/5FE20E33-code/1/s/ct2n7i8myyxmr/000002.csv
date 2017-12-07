@@ -1,0 +1,2 @@
+"0","data$trouble.sommeil.c2<-with(data,ifelse(data$Durée.de.sommeil.anormale == ""Oui"" ,"
+"0","                          ""Oui"", ""Non""))"

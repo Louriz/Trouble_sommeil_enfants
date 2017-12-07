@@ -1,0 +1,1 @@
+"0","data$Fréquence.<-mapvalues(data$Fréquence.,from=c(""> 1fois/semaine"",""1 fois /semaine""),to=c(""> 1 fois/semaine"",""1 fois/semaine""))"

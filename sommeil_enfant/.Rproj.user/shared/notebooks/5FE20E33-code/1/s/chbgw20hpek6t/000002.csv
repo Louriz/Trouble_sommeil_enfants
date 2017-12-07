@@ -1,0 +1,1 @@
+"0","data$Situation.professionnelle.mère<-mapvalues(data$Situation.professionnelle.mère,from=c(""travail"",""Travail "",""chomâge"",""Chomage""),to=c(""Travail"",""Travail"",""Chomâge"",""Chomâge""))"

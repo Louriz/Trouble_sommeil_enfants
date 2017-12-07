@@ -1,0 +1,2 @@
+"0","data$Durée_allaitement.<-mapvalues(data$Durée_allaitement.,from=c(""< 1mois"",""1 an 3 mois"",""1 an 5 mois"",""1mois"",""2 ans"",""3mois""),"
+"0","                                          to=c(""< 1 mois"",""15 mois"",""17 mois"",""1 mois"",""24 mois"",""3 mois""))"

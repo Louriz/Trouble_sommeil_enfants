@@ -1,0 +1,3 @@
+"0","data_3ans$mere_pere_chommage<-with(data_3ans,ifelse(data_3ans$Situation.professionnelle.père. ==""Chomâge""  |"
+"0","                data_3ans$Situation.professionnelle.mère ==""Chomâge"" ,"
+"0","                          ""Oui"", ""Non""))"

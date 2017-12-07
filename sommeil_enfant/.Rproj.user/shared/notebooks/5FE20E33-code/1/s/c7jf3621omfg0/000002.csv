@@ -1,0 +1,2 @@
+"0","data$trouble.sommeil.c1<-with(data,ifelse(data$Temps.d.endormissement. %in% c(""Plus de 1h"",""Entre 30 minutes et 1h"") , "
+"0","                          ""Oui"", ""Non""))"

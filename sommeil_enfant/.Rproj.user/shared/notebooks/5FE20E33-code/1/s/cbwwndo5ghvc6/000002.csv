@@ -1,0 +1,1 @@
+"0","data$heure.début.d.exposition.<-mapvalues(data$heure.début.d.exposition.,from=c(""entre 19h et 20h""),to=c(""Entre 19h et 20h""))"

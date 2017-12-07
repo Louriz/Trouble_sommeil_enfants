@@ -1,0 +1,1 @@
+"0","data$Nombre.<-mapvalues(data$Nombre.,from=c(""1 à 2 "",""1à 2"",""2à 3"",""1 fois""),to=c(""1 à 2"",""1 à 2"",""2 à 3 "",""1""))"

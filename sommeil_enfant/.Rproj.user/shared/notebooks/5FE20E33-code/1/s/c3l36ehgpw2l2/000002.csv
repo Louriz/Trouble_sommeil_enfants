@@ -1,0 +1,1 @@
+"0","data$Sexe.<-mapvalues(data$Sexe., from = c(""F"", ""F "",""G"",""G ""), to = c(""F"", ""F"",""G"",""G""))"

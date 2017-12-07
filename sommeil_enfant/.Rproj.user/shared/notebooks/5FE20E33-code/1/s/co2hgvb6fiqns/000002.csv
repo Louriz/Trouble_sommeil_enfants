@@ -1,0 +1,3 @@
+"0","data$trouble.sommeil.c3<-with(data,ifelse("
+"0","                data$Fréquence.== ""> 1 fois/semaine"", "
+"0","                          ""Oui"", ""Non""))"

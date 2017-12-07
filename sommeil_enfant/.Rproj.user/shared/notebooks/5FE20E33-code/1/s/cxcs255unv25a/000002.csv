@@ -1,0 +1,1 @@
+"0","data <- read.xlsx(""Analyse questionnaire.xlsx"",sheetIndex = 1,as.data.frame = T,encoding = 'UTF-8',rowIndex = c(1:161))"

@@ -1,0 +1,3 @@
+"0","data$mere_pere_conge<-with(data,ifelse(data$Situation.professionnelle.père. ==""Congé parental""  |"
+"0","                data$Situation.professionnelle.mère ==""Congé parental"" ,"
+"0","                          ""Oui"", ""Non""))"

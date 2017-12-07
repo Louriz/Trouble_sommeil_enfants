@@ -1,0 +1,1 @@
+"0","data$écrans.chambre.<-mapvalues(data$écrans.chambre.,from=c(""non"",""on"",""o"",""O""),to=c( ""Non"",""Non"",""Oui"",""Oui""))"

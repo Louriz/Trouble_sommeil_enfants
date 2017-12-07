@@ -1,0 +1,4 @@
+"0","data$trouble.sommeil_c123<-with(data,ifelse(data$Temps.d.endormissement. %in% c(""Plus de 1h"",""Entre 30 minutes et 1h"") &"
+"0","                data$Durée.de.sommeil.anormale == ""Oui"" &"
+"0","                data$Fréquence.== ""> 1 fois/semaine"", "
+"0","                          ""Oui"", ""Non""))"

@@ -1,0 +1,1 @@
+"0","data$trouble.sommeil<-mapvalues(data$trouble.sommeil,from=c(NA),to=c(""Non""))"

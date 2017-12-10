@@ -1,25 +1,56 @@
+---
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
+---
+#Introduction :
+Dans le cadre d'une thèse de médecine générale portant sur le sommeil des enfants de tout âge, nous allons effectuer une étude statistique en se basant sur  les résultas de notre questionnaire (cf annexe).La première partie du questionnaire pour dépister les troubles du sommeil chez les enfants. Nos critères ont été fixés selon notre recherche  bibliographique et notre directeur de thèse et donc il s’agit d’un trouble de sommeil si :
+1) Temps d'endormissement supérieur à 30 minutes 
+2) Des réveils nocturnes (au moins 2 fois par semaine) 
+3) Une durée de sommeil insuffisante selon l'âge 
 
+Ensuite, à partir de ces critères, nous avons séparé notre travail : une partie sur l’impact de l’exposition aux écrans et une autre partie  sur l’impact des facteurs environnementaux sur le sommeil des enfants.
+Ces deux partie de travail ont pour objectifs:
+
+  1) évaluer l’utilisation des écrans chez les enfants de 3 à 16 ans et de voir si cela a une influence sur leur sommeil.
+  2) indiquer dans quel environnement, la population de notre étude vit ainsi que de montrer l’impact que peut avoir l’environnement de          l’enfant sur son sommeil.
+
+L'étude effectuée sera organisé dans le rapport de la façon suivante :
+a) Préparation et nettoyage des données
+b) Exploration des données
+c) Tests statistiques
+d) Présentation des résultats
+e) Conclusion
+
+
+
+#Préparation et nettoyage des données
 ##Charger les librairies nécessaires :
 ```{r}
-library(xlsx)
+library(xlsx) # librairie pour pouvoir lire le fichier xlsx
 ```
 
 ##Charger les données :
 ```{r}
+# il faut spécifier encoding à UTF-8 pour garder la même écriture dans le fichier initial
+# le fichier initial contient des lignes vides, donc on se limite à la lige 161
+# si le fichier excel contient plusieurs feuilles, on utilise SheetIndex pour spécifier la feuille à extraire
 data <- read.xlsx("Analyse questionnaire.xlsx",sheetIndex = 1,as.data.frame = T,encoding = 'UTF-8',rowIndex = c(1:161))
 ```
-##Exploration des données :
 ```{r}
 attach(data)
 ```
 
 
-
-#### la variable Sexe :
+##Nettoyage des données
+Cette partie a pour objectif de fixer les niveau de chaque variable catégorielle. Ceci est dû généralement à la saisie des données, chose qui peut fausser dramaticalement les résultats.
+Donc s'il y a deux modalité de la même variables écrites de façon différente mais ont le même sens, il faut les corriger pour qu'elles soient écrites de la même façon.
+### La variable Sexe :
 ```{r}
 levels(Sexe.)
 ```
-Comme vous le voyez on a quatre valeurs différentes pour le sex alors que nous devons avoir que 2 niveau.
+Comme vous le voyez on a quatre valeurs différentes pour le sexe alors que nous devons avoir que 2 veleurs: F ( Femme) et H ( Homme)
 Pour résoudre cela : 
 ```{r}
 library(plyr)
@@ -32,7 +63,7 @@ data$Sexe.<-mapvalues(data$Sexe., from = c("F", "F ","G","G "), to = c("F", "F",
 #S'assurer : 
 levels(data$Sexe.)
 ```
-### la variables Heure de lever
+### La variables Heure de lever
 
 ```{r}
 levels(data$Heure.de.lever)
@@ -43,11 +74,11 @@ data$Heure.de.lever<-mapvalues(data$Heure.de.lever, from = c("Entre 7 et 8h"), t
 ```{r}
 levels(data$Heure.de.lever)
 ```
-### la variable Heure de coucher
+### La variable Heure de coucher
 ```{r}
 levels(data$Heure.de.coucher.)
 ```
-### les variables : Siestes, Durée, Nombre.jour
+### Les variables : Siestes, Durée, Nombre.jour
 ```{r}
 levels(data$Siestes.)
 levels(data$Durée.)
@@ -57,14 +88,14 @@ levels(data$Nombre.jour)
 data$Nombre.jour<-mapvalues(data$Nombre.jour,from=c("1à 2"),to=c("1 à 2"))
 ```
 
-### les variables : durée de sommeil moyenne, durée de sommeil anormale, difficulté endormissement
+### Les variables : durée de sommeil moyenne, durée de sommeil anormale, difficulté endormissement
 ```{r}
 levels(data$Durée.de.sommeil.moyenne)
 levels(data$Durée.de.sommeil.anormale)
 levels(data$Difficulté.endormissement.)
 ```
 
-### les variables : Réveils.nocturne, Nombre,Fréquence. 
+### Les variables : Réveils.nocturne, Nombre,Fréquence. 
 ```{r}
 levels(data$Réveils.nocturnes.)
 levels(data$Nombre.)
@@ -79,13 +110,13 @@ data$Fréquence.<-mapvalues(data$Fréquence.,from=c("> 1fois/semaine","1 fois /s
 
 ```
 
-### les variables : Somnolence, Troubles de la concentration
+### Les variables : Somnolence, Troubles de la concentration
 ```{r}
 levels(data$Somnolence.)
 levels(data$Trouble.de.la.concentration.)
 ```
 
-
+On fait la  même chose pour les variables lièes à l'environnement
 ### Les variables lièes à l'environnement :
 ```{r}
 levels(data$Origine.ethnique.père.)
@@ -132,7 +163,7 @@ levels(data$Durée_allaitement.)
 levels(data$Rituels.de.sommeil)
 levels(data$lesquels.)
 ```
- A voir ces niveau avec Sophie ..
+La variable lesquel,ci-dessus, est beaucoup complexe car dispose de plusieurs modalité. Donc il faut se mettre d'accord quelles modalité garder.
 ```{r}
 levels(data$chambre.partagée..)
 levels(data$avec.qui.)
@@ -173,8 +204,6 @@ data$accès_Tablettes.<-mapvalues(data$accès_Tablettes.,from=c("Non "),to=c("No
 ```
 
 
-
-
 ```{r}
 levels(data$téléphone.)
 levels(data$accès_téléphone)
@@ -199,26 +228,22 @@ levels(data$films.violents.)
 levels(data$jeux.vidéos.)
 levels(data$type.)
 ```
-
+La même chose pour la variable type de jeux vidèos, il faut se mettre d'accord sur quelles modalités à garder.
 ```{r}
 levels(data$temps.consacré.jour.)
 ```
 
+Pour l'instant, on a quasiment nettoyé toutes les variables sauf la variable âge. On reviendra sur cette variable quand c'est nécessaire.
 
 
-- Il reste la variable âge à classer ...
-### description des variables:
+### Description des variables:
 ```{r}
 summary(data)
 ```
 
-### L'Age :
+## Création des variables cibles 
+Les variables cibles sont les variables dont on veut étudier. A savoir la variable trouble_sommeil, ci-dessous, qui sera "Oui" si les conditions de trouble de sommeil sont remplies. De même pour les variables trouble_sommeil.ci (i allant de 1 à 3) liées à chaque critère.
 
-```{r}
-levels(data$Temps.d.endormissement.)
-levels(data$Durée.de.sommeil.anormale)
-levels(data$Fréquence.)
-```
 
 
 ### trouble_sommeil : en fonction des trois critères
@@ -272,19 +297,14 @@ data$trouble.sommeil_c123<-with(data,ifelse(data$Temps.d.endormissement. %in% c(
 ```
 
 
-voilà voilà, les données sont prêtes à mettre dand le four ;) :
 
 Enregistrer nos données préparées pour les futures importations :
 ```{r}
 write.csv(data, file = "data_prepared.csv")
 ```
 
-============================================================================================================
-
 ## Exploration des données :
-```{r}
-summary(data)
-```
+
 Changer le type des variables qu'on a créé :
 ```{r}
 data$trouble.sommeil_c123<-as.factor(data$trouble.sommeil_c123)
@@ -295,9 +315,6 @@ data$trouble.sommeil.c3<-as.factor(data$trouble.sommeil.c3)
 data$trouble.sommeil.c2<-as.factor(data$trouble.sommeil.c2)
 data$trouble.sommeil.c1<-as.factor(data$trouble.sommeil.c1)
 data$trouble.sommeil<-as.factor(data$trouble.sommeil)
-
-
-
 ```
 
 
@@ -305,7 +322,7 @@ data$trouble.sommeil<-as.factor(data$trouble.sommeil)
 summary(data)
 ```
 
-Comme vous le remarquez notre variables cible trouble.sommeil contient 70 NA's. En regardant notre trame de données on peut les remplacer par Non.
+Comme vous le remarquez notre variable cible trouble.sommeil contient 70 NA's. En regardant notre trame de données on peut les remplacer par Non.
 ```{r}
 data$trouble.sommeil<-addNA(data$trouble.sommeil)
 ```
@@ -320,17 +337,20 @@ data$trouble.sommeil<-mapvalues(data$trouble.sommeil,from=c(NA),to=c("Non"))
 levels(data$trouble.sommeil)
 ```
 
-```{r}
-summary(data)
-```
-### Tests statistiques d'indépendences KHi-2 :
-NB: On va considérer un risque alpha de 5% pour tout les tests
-####Hypthèse 1 : Les troubles de sommeil ne dépendent pas du sexe:
+# Tests statistiques d'indépendences KHi-2 :
+===============================================================
+Rappel :
 Chi-square test basics :
 Chi-square test examines whether rows and columns of a contingency table are statistically significantly
 associated.
 Null hypothesis (H0): the row and the column variables of the contingency table are independent. Alternative
 hypothesis (H1): row and column variables are dependent
+==============================================================================
+
+Pour tout les tests, On va considérer un risque alpha de 10%.
+## Test général portant sur le sexe de l'enfant sondé
+###Hypothèse 1 : Les troubles de sommeil ne dépendent pas du sexe:
+
 ```{r}
 table(data$trouble.sommeil,data$Sexe.)
 ```
@@ -341,13 +361,13 @@ chisq_sexe <- chisq.test(data$trouble.sommeil,data$Sexe.)
 chisq_sexe
 ```
 
-Le test donne une p-value de 0.43 ce qui permet avec un rique de 5% de garder l’hypthèse nulle et donc conclure
+Le test donne une p-value de 0.43 ce qui permet avec un rique de 10%o de garder l’hypthèse nulle et donc conclure
 que les deux variables catégorielles sont indépendentes.
 
 Les troubles de sommeils de dépendent pas du sexe de l'enfant sondé.
 
-### Tests relatifs à  l'expositions aux écrans.
-####Hypothèse 2 : les troubles de sommeil ne dépendent pas de l'accés au TV:
+## Tests relatifs à l'expositions aux écrans.
+###Hypothèse 1 : les troubles de sommeil ne dépendent pas de l'accés aux Télévisions:
 ```{r}
 table(data$trouble.sommeil,data$accès_TV)
 ```
@@ -356,11 +376,11 @@ table(data$trouble.sommeil,data$accès_TV)
 chisq_TV <- chisq.test(data$trouble.sommeil,data$accès_TV)
 chisq_TV
 ```
-Le test donne une p-value de 0.56 ce qui permet avec un rique de 5% de garder l’hypthèse nulle et donc conclure
+Le test donne une p-value de 0.56 ce qui permet avec un rique de 10% de garder l’hypothèse nulle et donc conclure
 que les deux variables catégorielles sont indépendentes.
 les troubles de sommeil ne dépendent pas de l'accés aux TVs.
 
-####Hypothèse 3 : les troubles de sommeil ne dépendent pas de l'accés aux ordi:
+###Hypothèse 2 : les troubles de sommeil ne dépendent pas de l'accés aux ordinateurs:
 ```{r}
 table(data$trouble.sommeil,data$accès_Ordinateur.)
 ```
@@ -368,10 +388,11 @@ table(data$trouble.sommeil,data$accès_Ordinateur.)
 chisq_Ordi <- chisq.test(data$trouble.sommeil,data$accès_Ordinateur.)
 chisq_Ordi
 ```
-Le test donne une p-value de 0.1003 ce qui permet avec un rique de 5% de garder l’hypthèse nulle et donc conclure
+Le test donne une p-value de 0.1003 ce qui permet avec un rique de 10% de garder l’hypothèse nulle et donc conclure
 que les deux variables catégorielles sont indépendentes.
-les troubles de sommeil ne dépendent pas de l'accés aux Ordi.
-####Hypothèse 4 : les troubles de sommeil ne dépendent pas de l'accés aux Tablettes:
+les troubles de sommeil ne dépendent pas de l'accés aux Ordinateurs.
+A noter que ce test est proche d'être favorisant pour l'hypothèse H1. Donc étant donné notre jeu de donnée on peut se contenter de dire que effectivement l'accés aux ordinateurs a un effet sur le sommeil chez les enfants.
+###Hypothèse 4 : les troubles de sommeil ne dépendent pas de l'accés aux Tablettes:
 
 ```{r}
 table(data$trouble.sommeil,data$accès_Tablettes.)
@@ -382,11 +403,11 @@ table(data$trouble.sommeil,data$accès_Tablettes.)
 chisq_Tab<-chisq.test(data$trouble.sommeil,data$accès_Tablettes.)
 chisq_Tab
 ```
-Le test donne une p-value de 0.45 ce qui permet avec un rique de 5% de garder l’hypthèse nulle et donc conclure
+Le test donne une p-value de 0.45 ce qui permet avec un rique de 10% de garder l’hypthèse nulle et donc conclure
 que les deux variables catégorielles sont indépendentes.
 les troubles de sommeil ne dépendent pas de l'accés aux tablettes.
 
-####Hypothèse 5 : les troubles de sommeil ne dépendent pas de l'accés aux Télé:
+###Hypothèse 5 : les troubles de sommeil ne dépendent pas de l'accés aux Téléphones:
 ```{r}
 table(data$trouble.sommeil,data$accès_téléphone)
 ```
@@ -394,70 +415,72 @@ table(data$trouble.sommeil,data$accès_téléphone)
 chisq_tele<-chisq.test(data$trouble.sommeil,data$accès_téléphone)
 chisq_tele
 ```
-Le test donne une p-value de 0.06 ce qui permet avec un rique de 5% de garder l’hypthèse nulle et donc conclure
-que les deux variables catégorielles sont indépendentes.
-les troubles de sommeil ne dépendent pas de l'accés aux télé.
+Le test donne une p-value de 0.06 ce qui permet avec un rique de 10% de rejetter l’hypothèse nulle et donc conclure
+que les deux variables catégorielles sont dépendentes.
+les troubles de sommeil  dépendent  de l'accés aux téléphones.
 
-Rq: voir avec Sophie. en changant alpha à 10%( le risque), on peut rejeter H0 dans ce cas et conclure que les troubles de sommeil dépendent de l'accés aux téléphones.
 
-Cela pourrant être vrai surtout pour les enfants agés de plus de ~~~4, 5 ans ( résaux sociaux, les jeux, ....)
+Rq: Les test effectués ci-dessus sont faits pour tout âge, mais en réalité pas tous les enfants ont accés aux outils technologiques étudiés. Pour cela on va se limiter aux enfants avec au mois 3 ans d'âge.
 
-==============================================================================================================
-Comment nos enfants d’âge scolaire utilisent les écrans ?
-Cela influence-t-il leur sommeil ?
-Est-il nécessaire de développer une campagne de prévention sur Brest ?
- 
-L’objectif principal est d’évaluer l’utilisation des écrans chez les enfants de 3 à 16 ans et de voir si cela a une influence sur leur sommeil.
 
 
 Choissons alors les enfants avec un age >=3ans :
 ```{r}
 data_3ans<-data[72:160,]
 ```
-#1  Temps d’écran
-
-
-
-### Les enfants qui passent plus de 2 heures par jour devant un écran ont plus de trouble du sommeil.
+Les test seront organisés sous forme de parties, chaque partie a un théme différent.
+## 1) Temps d’écran
+### Hypothèse 1 : Les enfants qui passent plus de 2 heures par jour devant un écran ont plus de trouble du sommeil.
 ```{r}
 table(data_3ans$trouble.sommeil,data_3ans$temps.d.écran..jour)
 ```
 
-NB: on va considérer que les enfants qui passent entre 1h et 2h par jour devant un écran sont des enfants qui passent au moins 2h par jours. C'est une juste une simplification ( à voir) pour vérifier l'hypthèse.
 
-On obtient alors :
 
 |   |  <2    |  >=2   |
-|Non    |     12  | 33       |
-|Oui    |     9  |    35   |
+|Non    |     31  |8       |
+|Oui    |     24 |    20   |
+```{r}
+prop.test(x=c(20,27),n=c(28,55),alternative = 'g')
+```
 
-Donc effectivement les enfants qui passent plus de 2 heures par jour devant un écran ont plus de trouble du sommeil.
+Avec un risque de 10%, on accepte H0. Par conséquent, la proportion des enfants, qui passent plus de 2 heures devant les écrans et ayant trouble de sommeil, est inférieure à celle des enfants qui passent moins de 2 heures devant les écrans et ayant trouble de sommeil.
 
 
-###La somnolence est plus fréquente chez les enfants exposés plus de 2 heures par jour aux écrans :
+
+### Hypothèse 2 :La somnolence est plus fréquente chez les enfants exposés plus de 2 heures par jour aux écrans :
 ```{r}
 table(data_3ans$Somnolence.,data_3ans$temps.d.écran..jour)
 ```
-En gardant l'hypothèse que j'ai fait, on a 5 enfants  qui passent plus de 2 heures devant les écrans par jour et qui ont de la somnolence. à l'instar d'un seul enfant qui passe moins d'une heure et qui a de la somnolence.
 
-hypothèse à garder.
+```{r}
+prop.test(x=c(5,4),n=c(56,28))
+```
+Avec un risque de 10%, on accepte H0. Par conséquent, la proportion des enfants, qui passent plus de 2 heures devant les écrans et ayant de la  somnolence, est égale  à celle des enfants qui passent moins de 2 heures devant les écrans et ayant de la somnolence.
 
-### Passer plus de 2heures devant un écran favorise les réveils précoces ( avant 6heures ) .
+
+### Hypothèse 3:  Passer plus de 2 heures devant un écran favorise les réveils précoces ( avant 6heures ) 
 ```{r}
 table(data_3ans$Heure.de.lever,data_3ans$temps.d.écran..jour)
 
 ```
-Cette hypothèse n'est pas vraie. sauf si on considére la ligne Avant 6h toute seule.
+Il faut spécifier avec qui vous voulez comparer. Est ce que avec tous les enfants ou juste un cas particulier. Exemple: Avant 6h et Après 8h.
+Mais de toute façon, ce n'est pas un test à faire.
 
 
-###Les troubles de la concentration sont plus fréquents chez les enfants exposés plus de 2heures par jour aux écrans.
+
+###Hypothèse 4 :Les troubles de la concentration sont plus fréquents chez les enfants exposés plus de 2heures par jour aux écrans.
 ```{r}
 table(data_3ans$Trouble.de.la.concentration., data_3ans$temps.d.écran..jour)
 ```
 
-oui cette hypothèse est vraie.
+```{r}
+prop.test(x = c(2,5),n=c(51,27),alternative = 'g')
+```
+Avec un risque de 10%, on accepte H0. Par conséquent, la proportion des enfants, qui passent plus de 2 heures devant les écrans et ayant des troubles de la concentration, est supérieure  à celle des enfants qui passent moins de 2 heures devant les écrans et ayant des troubles de la concentration.
 
-###Le temps d’écrans augmente avec l’âge : 
+### Hypothèse 5 : Le temps d’écrans augmente avec l’âge :
+Il faut convertir les deux variable en numérique et faire une régression linéaire qui justifie la tendence.
 ```{r}
 #table(data_3ans$Age.,data_3ans$temps.d.écran..jour)
 ```
@@ -467,41 +490,59 @@ oui cette hypothèse est vraie.
 
 
 
-#2) Utilisation des écrans en soirée:
-###Les enfants qui utilisent les écrans 2heures avant leur coucher ont plus de troubles du sommeil:
+##2) Utilisation des écrans en soirée:
+###Hypothèse 1 : Les enfants qui utilisent les écrans 2 heures avant leur coucher ont plus de troubles du sommeil:
 
-#### Utiliser les écrans après 20h influence sur le temps de sommeil:
+###Hypothèse 2 : Utiliser les écrans après 20h influence sur le temps de sommeil:
 ```{r}
 table(data_3ans$trouble.sommeil,data_3ans$heure.début.d.exposition.)
 ```
-Généralement so sont les enfants qui s'exposent aux écrans avec 19h qui ont des trouble de sommeil.
+
+```{r}
+prop.test(x=c(40,2),n=c(77,2))
+```
+On garde H0. Donc les deux proportions sont égales.
+On a effecué multiples tests pour ce cas pour comparer différentes modalité, mais on trouve toujours le même résultat.
 
 ## 3 Le nombre d’écrans :
 
 
 ## 4 Film violent  :
-####Regarder des films au contenu inadapté pour l’âge favorise les troubles du sommeil.
+###Hypothèse 1 : Regarder des films au contenu inadapté pour l’âge favorise les troubles du sommeil.
 ```{r}
 table(data_3ans$trouble.sommeil,data_3ans$films.violents.)
 ```
-les enfant qui ne regardent pas de films violents ont plus de trouble de sommeil.
+```{r}
+prop.test(x = c(7,37),n=c(8,74),alternative = 'l')
+```
+Avec un risque de 10% on accepte H0. Donc la proportion des enfants, qui regardent des films au contenu inadapté pour l'âge et ayant des trouble de sommeil, est supérieure à celle des enfant qui ne regardent pas des films au contenu inadapté pour l'âge et n'ayant pas des troubles de sommeil.
 
 
 
-####Regarder des films au contenu inadapté pour l’âge augmente le délais d’endormissement:
+###Hypothèse 2: Regarder des films au contenu inadapté pour l’âge augmente le délais d’endormissement:
 ```{r}
 table(data_3ans$Temps.d.endormissement.,data_3ans$films.violents.)
 ```
+```{r}
+prop.test(x=c(6,30),n=c(8,73))
+```
+Avec un risque de 10%, on va garder H0. Donc les deux proportions sont égales. La proportion des enfants, qui regradent des films au contneu inadapté et ayant un temps d'endormissment important, est égale à celle des enfants qui ne regradent pas des films au contneu inadapté et ayant un temps d'endormissment imporant.
 
-hypothèse rejetée.
-#####Regarder des films au contenu inadapté pour l’âge favorise les réveils nocturne:
+###Hypothèse 3: Regarder des films au contenu inadapté pour l’âge favorise les réveils nocturne:
 ```{r}
 table(data_3ans$Réveils.nocturnes.,data_3ans$films.violents.)
 ```
-Hypothèse rejetée.
-
+```{r}
+chisq.test(data_3ans$Réveils.nocturnes.,data_3ans$films.violents.)
+```
+le test d'indépendence assure l'existance d'une dépendence entre les réveils nocturnes et les films violents.
+```{r}
+prop.test(x=c(6,19),n=c(8,74),alternative = 'l')
+```
+Avec un risque de 10%, on garde H0. Donc la proportion des enfants, qui regardent des films violents et faisant des réveils nocturnes, est supérieure à celle des enfants qui ne regardent pas des films violents et faisant des réveils nocturnes.
 
 ##5) Avoir un écran dans sa chambre :
+Un petit nettoyage est nécessaire :
 ```{r}
 levels(data_3ans$écrans.chambre.)
 ```
@@ -513,129 +554,178 @@ data_3ans$écrans.chambre.<-mapvalues(data_3ans$écrans.chambre.,from=c("non","o
 
 ```
 
-####-Avoir un écran dans sa chambre augmente la somnolence.
+###Hypothèse 1 : Avoir un écran dans sa chambre augmente la somnolence.
 
 ```{r}
 table(data_3ans$Somnolence., data_3ans$écrans.chambre.)
 ```
 
-Oui, avoir un écran dans sa chambre augemente la somnolence.
+```{r}
+prop.test(x=c(5,3),n=c(18,63),alternative = 'l')
+```
+Avec un risque de 10%, on accepte H0. Donc la proportion des enfants, qui ont des écrans dans ses chambres et ayant de la somnolence , est supérieure à celle des enfants qui n'ont pas des écrans dans ses chambres et ayant de la somnolence. 
 
-####Avoir un écran dans sa chambre augmente les troubles de la concentration.
+###Hypothèse 2: Avoir un écran dans sa chambre augmente les troubles de la concentration.
 
 ```{r}
 table(data_3ans$Trouble.de.la.concentration., data_3ans$écrans.chambre.)
 ```
-Oui, avoir un écran dans sa chambre augemente les troubles de la concentration.
+```{r}
+prop.test(x=c(4,3),n=c(17,59),alternative = 'l')
+```
+Avec un risque de 10%, on accepte H0. Donc la proportion des enfants, qui ont des écrans dans ses chambres et ayant des troubles de la concentration , est supérieure à celle des enfants qui n'ont pas des écrans dans ses chambres et ayant des troubles de la concentration.
 
-####Avoir un écran dans sa chambre retarde l’heure de coucher.
+###Hypothèse 3: Avoir un écran dans sa chambre retarde l’heure de coucher.
 ```{r}
 table(data_3ans$Heure.de.coucher., data_3ans$écrans.chambre.)
 ```
 
-pas vraiment.
+```{r}
+chisq.test(data_3ans$Heure.de.coucher., data_3ans$écrans.chambre.)
+```
+Le test de Khi-2 montre qu'il y aie une dépendence entre l'heure de coucher et la fait d'avoir un écran dans sa chambre.
+```{r}
+prop.test(x=c(11,6),n=c(18,63),alternative ='l')
+```
+Avec un risque de 10%, on accepte H0. Donc la proportion des enfants, qui ont des écrans dans ses chambres et ayant un retard de l’heure de coucher , est supérieure à celle des enfants qui n'ont pas des écrans dans ses chambres et ayant un retard de l’heure de coucher.
 
-####Avoir un écran dans sa chambre favorise les réveils nocturnes
+###Hypothèse 4 : Avoir un écran dans sa chambre favorise les réveils nocturnes
 ```{r}
 table(data_3ans$Réveils.nocturnes., data_3ans$écrans.chambre.)
 ```
+```{r}
+prop.test(x=c(7,18),n=c(18,63))
+```
+Avec un risque de 10%, on accepte H0. Donc la proportion des enfants, qui ont des écrans dans ses chambres et ayant  des réveils nocturnes , est égale à celle des enfants qui n'ont pas des écrans dans ses chambres et ayant des réveils nocturnes.
 
+Un test de Khi-2 va confirmer nos dires :
 ```{r}
 chisq_ecran_nocturne<-chisq.test(data_3ans$Réveils.nocturnes., data_3ans$écrans.chambre.)
 chisq_ecran_nocturne
 ```
-Avec un risque de 5%, il n'y a pas de dépendence entre avoir un écran dans se chambre et les réveils nocturnes.
-####-Avoir un écran dans sa chambre augmente le délai d’endormissement.
+Avec un risque de 10%, il n'y a pas de dépendence entre avoir un écran dans sa chambre et les réveils nocturnes.
+###Hypothèse 5 : Avoir un écran dans sa chambre augmente le délai d’endormissement.
 ```{r}
 table(data_3ans$Temps.d.endormissement., data_3ans$écrans.chambre.)
 ```
-Oui.
 ```{r}
-chisq_ecran_endo<-chisq.test(data_3ans$Temps.d.endormissement., data_3ans$écrans.chambre.)
-chisq_ecran_endo
+chisq.test(data_3ans$Temps.d.endormissement., data_3ans$écrans.chambre.)
 ```
-Le test assure avec un risque de 5% qu'il y a une forte dépendence entre avoir un écrans dans sa chambre et le temps d'endormissement.
+Le test de khi-2 nous confirme l'existence d'une dépendence entre le fait d'avoir un écran dans sa chambre et le temps d'endormissment.
 
+```{r}
+prop.test(x=c(15,20),n=c(18,62),alternative = 'l')
+```
+Avec un risque de 10%, on accepte H0. Donc la proportion des enfants, qui ont des écrans dans ses chambres et ayant un délai d’endormissement important, est supérieure à celle des enfants qui n'ont pas des écrans dans ses chambres et ayant un délai d’endormissement important.
 
-#####-Avoir un écran dans sa chambre est plus fréquent chez les enfants avec des troubles du sommeil.
+###Hypothèse 6 : Avoir un écran dans sa chambre est plus fréquent chez les enfants avec des troubles du sommeil.
 ```{r}
 table(data_3ans$trouble.sommeil, data_3ans$écrans.chambre.)
 ```
-Oui.
 ```{r}
-chisq_ecran_trouble<-chisq.test(data_3ans$trouble.sommeil, data_3ans$écrans.chambre.)
-chisq_ecran_trouble
+chisq.test(data_3ans$trouble.sommeil, data_3ans$écrans.chambre.)
 ```
-avec un risque de 5%, on rejette H0, donc il y a une forte dépendence entre avoir un écran dans sa chambre et les troubles de sommeil.
-
-
-#6) Jeux vidéos : 
+Le test affirme la dépendence entre les troubles de sommeil et le fait d'avoir un écran dans sa chambre.
 
 ```{r}
-table(data_3ans$jeux.vidéos.,data_3ans$trouble.sommeil)
+prop.test(x=c(16,27),n=c(18,63),alternative = 'l')
 ```
+Avec un risque de 10%, on accepte H0. Donc la proportion des enfants, qui ont des écrans dans ses chambres et ayant des troubles de sommeil, est supérieure à celle des enfants qui n'ont pas des écrans dans ses chambres et ayant des troubles de sommeil.
 
+
+##6) Jeux vidéos : 
+faisons d'abord des test générales :
 ```{r}
 chisq_jeux<-chisq.test(data_3ans$jeux.vidéos.,data_3ans$trouble.sommeil)
 chisq_jeux
 ```
- En général pas de dépendence entre les jeux et les troubles de sommeil.
-####Jouer aux jeux vidéos plus de 1 heure par jour favorise les troubles du sommeil.
+Le test affirme qu'en général il n'y pas de dépendence entre les jeux vidéos et les troubles de sommeil.
+```{r}
+table(data_3ans$jeux.vidéos.,data_3ans$trouble.sommeil)
+```
+```{r}
+prop.test(x=c(25,19),n=c(43,39))
+```
+Avec un risque de 10%, on accepte H0. Donc la proportion des enfants, qui jeuent des jeux vidéos et ayant des troubles de sommeil, est égale à celle des enfants qui ne jeuent  pas aux jeux vidéos  et ayant des troubles de sommeil.
+ 
+ 
+###Hypothèse 1 :Jouer aux jeux vidéos plus de 1 heure par jour favorise les troubles du sommeil.
 ```{r}
 table(data_3ans$temps.consacré.jour.,data_3ans$trouble.sommeil)
 ```
-en globalité OUI.
-
-####Jouer aux jeux vidéos plus de 1 heure par jour favorise les troubles de la concentration.
 ```{r}
-table(data_3ans$temps.consacré.jour.,data_3ans$Trouble.de.la.concentration.)
-
+chisq.test(data_3ans$temps.consacré.jour.,data_3ans$trouble.sommeil)
 ```
-OUI.
+Le test de khi-2 affirme qu'il n'y a pas de dépendence entre le temps consacré aux jeux vidéos et les troubles de sommeil.
+```{r}
+prop.test(x=c(14,7),n=c(25,18))
+```
+Avec un risque de 10%, on accepte H0. Donc la proportion des enfants, qui jeuent des jeux vidéos plus d'une heure et ayant des troubles de sommeil, est égale à celle des enfants qui n'ont pas des troubles de sommeil et jouent plus d'une heure les jeux vidéos.
+
+###Hypothèse 2: Jouer aux jeux vidéos plus de 1 heure par jour favorise les troubles de la concentration.
 ```{r}
 chisq_jeux_concentration<-chisq.test(data_3ans$temps.consacré.jour.,data_3ans$Trouble.de.la.concentration.)
 chisq_jeux_concentration
 ```
-Le test est proche d'être favirosant au fait qu'il aie un dépendence entre  Jouer aux jeux vidéos plus de 1 heure par jour et les troubles de la concentration.
-
-####Jouer aux jeux vidéos plus de 1 heure par jour favorise la somnolence :
+le test de khi-2 affirme très bien qu'il y a une dépendence entre le temps consacré aux jeus vidéos et les troubles de concentration. 
 ```{r}
-table(data_3ans$temps.consacré.jour.,data_3ans$Somnolence.)
+table(data_3ans$temps.consacré.jour.,data_3ans$Trouble.de.la.concentration.)
+
 ```
+```{r}
+prop.test(x=c(4,17),n=c(5,38))
+```
+Avec un risque de 10%, on accepte H0. Donc la proportion des enfants, qui jeuent des jeux vidéos plus d'une heure et ayant des troubles de concentration, est égale à celle des enfants qui n'ont pas des troubles de concentration et jouent plus d'une heure les jeux vidéos.
 
 
+
+###Hypothèse 3: Jouer aux jeux vidéos plus de 1 heure par jour favorise la somnolence :
 ```{r}
 chisq_jeux_somen<-chisq.test(data_3ans$temps.consacré.jour.,data_3ans$Somnolence.)
 chisq_jeux_somen
 ```
 
-Le test est proche d'être favirosant au fait qu'il aie un dépendence entre  Jouer aux jeux vidéos plus de 1 heure par jour et la somnolence.
-
-
-
-####Les enfants qui utilisent les jeux vidéos passe plus de temps devant les écrans.
-
-
-
-####Les enfants qui ont un trouble du sommeil et qui jouent aux jeux vidéos utilisent plus fréquemment des jeux type : guerre, éducatif, sport aventure ?
-
-
-####Jouer aux jeux vidéos favorise les réveils précoces ( avant 6h):
+Le test est  favirosant au fait qu'il aie un dépendence entre  Jouer aux jeux vidéos plus de 1 heure par jour et la somnolence.
 ```{r}
-table(data_3ans$Heure.de.lever,data_3ans$jeux.vidéos.)
+table(data_3ans$temps.consacré.jour.,data_3ans$Somnolence.)
 ```
+```{r}
+prop.test(x=c(4,17),n=c(5,38))
+```
+Avec un risque de 10%, on accepte H0. Donc la proportion des enfants, qui jeuent des jeux vidéos plus d'une heure et ayant de la somnolence, est égale à celle des enfants qui n'ont pas de la somnolence et jouent plus d'une heure les jeux vidéos.
+
+
+
+
+
+###Hypothèse 4: Les enfants qui utilisent les jeux vidéos passe plus de temps devant les écrans.
+
+
+
+###Hypothèse 5: Les enfants qui ont un trouble du sommeil et qui jouent aux jeux vidéos utilisent plus fréquemment des jeux type : guerre, éducatif, sport aventure ?
+
+
+###Hypothèse 6: Jouer aux jeux vidéos favorise les réveils précoces ( avant 6h):
 ```{r}
 chisq_jeux_précoce<-chisq.test(data_3ans$Heure.de.lever,data_3ans$jeux.vidéos.)
 chisq_jeux_précoce
 
 ```
-avec un risque de 10%, on rejette H0, donc il y a une dépendence entre jouer aux jeux vidéos et  les heures de  réveil.
-==============================================================================================================
+Avec un risque de 10%, on rejette H0, donc il y a une dépendence entre jouer aux jeux vidéos et  les heures de  réveil.
+```{r}
+table(data_3ans$Heure.de.lever,data_3ans$jeux.vidéos.)
+```
+```{r}
+prop.test(x=c(2,0),n=c(42,38))
+```
+Avec un risque de 10%, on accepte H0. Donc la proportion des enfants, qui jeuent des jeux vidéos plus d'une heure et faisant des réveils précoces, est égale à celle des enfants qui ne font pas des réveils précoces et jouent plus d'une heure les jeux vidéos.
 
 
-L’objectif de cette partie est d’indiquer dans quel environnement, la population de notre étude vit ainsi que de montrer l’impact que peut avoir l’environnement de l’enfant sur son sommeil …
 
-Après, je pense qu’on fera de notre côté les caractéristiques de notre population : Pourcentage de filles VS garçons, Pourcentage d’enfants par classe d’âge pour montrer la répartition.
+============================= Fin partie 1 ==================================
+
+
+
 
 ##1)	 Origine ethnique :
  
@@ -644,10 +734,12 @@ Après, je pense qu’on fera de notre côté les caractéristiques de notre pop
 
 ###Hypothèse 2 : Les enfants (tout âge confondus) ayant au moins un de leur parent d’origine ethnique « Asiatique » se couchent plus tôt le soir.
 
-####Hypothèse 3 : L’origine ethnique de l’enfant a une influence sur les troubles du sommeil recherchés (Délai d’endormissement significativement plus élevé, nombres de réveils nocturnes significativement plus élevé, durée de sommeil significativement plus faible)
+###Hypothèse 3 : L’origine ethnique de l’enfant a une influence sur les troubles du sommeil recherchés
+#### Troubles de sommeil :
 ```{r}
 table(data$Origine.ethnique.mère,data$trouble.sommeil)
 ```
+
 
 
 ```{r}
@@ -655,10 +747,15 @@ chisq_mére<-chisq.test(data$Origine.ethnique.mère,data$trouble.sommeil)
 chisq_mére
 ```
 
-Avec un risque de 5%, on rejette l'hypothèse nulle et par suite il y a une dépendence entre l'origine éthnique de la mére et les trouble de sommeil chez les enfants tout âge confondus.
+Avec un risque de 10%, on rejette l'hypothèse nulle et par suite il y a une dépendence entre l'origine éthnique de la mére et les troubles de sommeil chez les enfants tout âge confondus.
 
-C'est surtout chez l'origine africaine. Ce résultat pourrait être intérressant si l'échantillon de travail est représentatif de ka population. Mais pour expliquer cette constat, on peut penser au fait que en générale les famile africaine vivent dans des maison à un nombre de  chambre limit ce qui peut être un facteur derière ces troubles remarqués.
-
+C'est surtout chez l'origine africaine. Ce résultat pourrait être intérressant si l'échantillon de travail est représentatif de la population. Mais pour expliquer cette constat, on peut penser au fait que en générale les familles africaines vivent dans des maisons à un nombre de  chambres limité ce qui peut être un facteur derière ces troubles remarqués.
+```{r}
+chisq_pére<-chisq.test(data$Origine.ethnique.père,data$trouble.sommeil)
+chisq_pére
+```
+Avec un risque de 10%, on garde H0. c'est comme même intérresant de savoir pourquoi les troubles ne dépendent que de l'origine éthniques des mères sans celui des pères.
+####Délai d’endormissement: 
 ```{r}
 table(data$Origine.ethnique.mère, data$Temps.d.endormissement.)
 ```
@@ -667,8 +764,13 @@ chisq_mere_endo<-chisq.test(data$Origine.ethnique.mère, data$Temps.d.endormisse
 chisq_mere_endo
 ```
 
-Ce test est proche d'être favorisant au fait qu'il aie une dépendence forte entre l'origine éthnique de la mère et le temps d'endormissement.
-
+Le test montre qu'il y a une dépendence forte entre l'origine éthnique de la mère et le temps d'endormissement.
+```{r}
+chisq_pere_endo<-chisq.test(data$Origine.ethnique.père., data$Temps.d.endormissement.)
+chisq_pere_endo
+```
+Avec un risque de 10%, on garde H0. c'est comme même intérresant de savoir pourquoi les troubles ne dépendent que de l'origine éthniques des mères sans celui des pères.
+#### Réveils nocturnes :
 
 ```{r}
 table(data$Origine.ethnique.mère, data$Réveils.nocturnes.)
@@ -678,13 +780,15 @@ table(data$Origine.ethnique.mère, data$Réveils.nocturnes.)
 chisq_mere_nocturne<-chisq.test(data$Origine.ethnique.mère, data$Réveils.nocturnes.)
 chisq_mere_nocturne
 ```
-Avec un risque de 5%, on rejette H0 d'où la dépendence entre les réveils nocturnes et l'origine de la mére.
+Avec un risque de 10%, on rejette H0 d'où la dépendence entre les réveils nocturnes et l'origine de la mére.
+
 ```{r}
 chisq_pere_nocturne<-chisq.test(data$Origine.ethnique.père., data$Réveils.nocturnes.)
 chisq_pere_nocturne
 ```
-Avec un risque de 5%, on garde H0. c'est comme même intérresant de savoir pourquoi les troubles ne dépendent que de l'origine éthniques des mères sans celui des pères.
+Avec un risque de 10%, on garde H0. c'est comme même intérresant de savoir pourquoi les troubles ne dépendent que de l'origine éthniques des mères sans celui des pères.
 
+#### Durée de sommeil anormale :
 
 ```{r}
 table(data$Origine.ethnique.mère, data$Durée.de.sommeil.anormale)
@@ -697,6 +801,14 @@ chisq_mere_anormale<-chisq.test(data$Origine.ethnique.mère, data$Durée.de.somm
 chisq_mere_anormale
 ```
 Donc il y a une dépendence entre l'origine éthnique de la mère et la durée anormale du sommeil. C'est surtout chez les enfants dont l'origine éthnique de la mère est soit africaine ou française.
+```{r}
+chisq_pere_anormale<-chisq.test(data$Origine.ethnique.père., data$Durée.de.sommeil.anormale)
+chisq_pere_anormale
+```
+Avec un risque de 10%, on garde H0. c'est comme même intérresant de savoir pourquoi les troubles ne dépendent que de l'origine éthniques des mères sans celui des pères.
+
+à l'issue de ces tests, on peut voir que sauf l'origine éthinique de la mère a une influence sur les troubles de sommeil chez les enfants.
+Résultats intérresants, mais cela doit être interprété par des experts métiers.
 
 #2) Organisation familiale :
 

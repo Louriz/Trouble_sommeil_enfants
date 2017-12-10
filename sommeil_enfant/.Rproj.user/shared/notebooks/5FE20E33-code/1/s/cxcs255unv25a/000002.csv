@@ -1,1 +1,4 @@
+"0","# il faut spécifier encoding à UTF-8 pour garder la même écriture dans le fichier initial"
+"0","# le fichier initial contient des lignes vides, donc on se limite à la lige 161"
+"0","# si le fichier excel contient plusieurs feuilles, on utilise SheetIndex pour spécifier la feuille à extraire"
 "0","data <- read.xlsx(""Analyse questionnaire.xlsx"",sheetIndex = 1,as.data.frame = T,encoding = 'UTF-8',rowIndex = c(1:161))"

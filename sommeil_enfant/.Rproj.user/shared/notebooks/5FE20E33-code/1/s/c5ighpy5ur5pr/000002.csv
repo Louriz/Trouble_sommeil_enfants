@@ -1,3 +1,0 @@
-"0","data$h2<-with(data,ifelse(data$Frères.ou.sœurs. ==""Oui""  &"
-"0","                data$chambre.partagée..== ""Oui"" ,"
-"0","                          ""Oui"", ""Non""))"
